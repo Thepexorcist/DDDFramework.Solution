@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="85840c4b-4b18-4a85-8686-de095e8e72f6" ChangeDateTime="09/18/2022 07:22:35">
+    <Property Name="ElementName" Value="[dbo].[WorkspaceProject].[UniqueIdentifier]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[WorkspaceProject]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UniqueProjectNumber" />
+  </Operation>
+</Operations>

@@ -1,0 +1,58 @@
+﻿@page "/project-management/overview/{tenantId:int}"
+
+<h1>Projects</h1>
+
+<p>This component handles the listing and management of projects. This displays data from the Second Context Bounded Context.</p>
+
+@if (_projectOverviewReadModel == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h5>Project yet not published</h5>
+    <p><span>These are the projects that we registered in the first context bounded context. These are sent over with integration events. When project is published from workspace a new integration event will be sent updating project to published and then shown in the table below.</span></p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Project number</th>
+                <th>Display name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in _projectOverviewReadModel.Projects.Where(x => !x.IsPublished))
+            {
+                <tr>
+                    <td>@project.ProjectNumber</td>
+                    <td>@project.DisplayName</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+
+    <h5>Projects that are published</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Project number</th>
+                <th>Display name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in _projectOverviewReadModel.Projects.Where(x => x.IsPublished))
+            {
+                var link = "project-management/details/" + @_projectOverviewReadModel.TenantId + "/" + project.ProjectId;
+                <tr>
+                    <td>@project.ProjectNumber</td>
+                    <td>@project.DisplayName</td>
+                    <td><NavLink href=@link>Details about project</NavLink></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

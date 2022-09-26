@@ -1,0 +1,42 @@
+﻿@page "/"
+@page "/tenant-management/overview"
+
+<h1>Tenants</h1>
+
+<p>This component handles the listing and creation of tenants.</p>
+
+@if (_tenants == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tenant in _tenants)
+            {
+                var link = "tenant-management/details/" + @tenant.TenantId;
+                var linkProjects = "project-management/overview/" + @tenant.TenantId;
+                <tr>
+                    <td>@tenant.Name</td>
+                    <td><NavLink href=@link>Details and workspaces</NavLink></td>
+                    <td><NavLink href=@linkProjects>Go directly to project management</NavLink></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <input placeholder="Name of new tenant..." @onchange="@OnRegisterNewTenantNameChange" />
+
+    <button @onclick="RegisterTenantAsync">
+        Register new tenant
+    </button> 
+}
+

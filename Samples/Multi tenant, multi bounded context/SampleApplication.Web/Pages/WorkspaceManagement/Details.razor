@@ -1,0 +1,79 @@
+﻿@page "/workspace-management/details/{tenantId:int}/{workspaceId:int}"
+
+<h1>Workspace details</h1>
+
+<p>This component handles the details about a workspace and projects</p>
+
+@if (_workspace == null)
+{
+     <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <h4>Workspace: @_workspace.Name - Activated: @_workspace.IsActive</h4>
+            <p><span>Nothing special happens when activating or deactivating a workspace. It shows in the log and no more projects can be published or added.</span></p>
+            <button type="button" id="button1" @onclick="OnActivate">Activate</button>
+            <button type="button" id="button2" @onclick="OnDeactivate">Deactivate</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <br />
+            <h5>Projects</h5>
+            <div class="row px-3">
+                @foreach (var project in _workspace.Projects)
+                {
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                        <h7 class="card-title">@project.Name - Published: @project.IsPublished</h7>
+                        <br/>
+                        <h8 class="card-subtitle mb-2 text-muted">@project.UniqueProjectNumber</h8>
+                        <br/>
+                        <button type="button" id="publishButton" @onclick="() => Publish(project)">Publish</button>
+                      </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+
+    @if (!@_workspace.IsActive)
+    {
+        <label>Workspace needs to be active before any projects can be added</label>
+        <br />
+    }
+    else
+    {
+        <input placeholder="Name of new project..." @onchange="@OnAddNewProjectNameChange" />
+        <button @onclick="AddNewProjectAsync">
+            Add new project
+        </button>
+    }
+
+    <br />
+
+    <br />
+        <h5>Log entries</h5>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var logEntry in _workspace.LogEntries)
+            {
+                <tr>
+                    <td>@logEntry.Created.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                    <td>@logEntry.Action</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    
+}

@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[OutboxMessage]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, 
+    [OccurredOn] DATETIME NOT NULL, 
+    [Type] NVARCHAR(255) NOT NULL, 
+    [Data] NVARCHAR(MAX) NOT NULL, 
+    [ProcessedDate] DATETIME NULL
+)

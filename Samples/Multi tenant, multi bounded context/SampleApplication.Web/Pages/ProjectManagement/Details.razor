@@ -1,0 +1,131 @@
+﻿@page "/project-management/details/{tenantId:int}/{projectId:int}"
+
+<h1>Project details</h1>
+
+<p>This component handles the details about a project and to manage it</p>
+
+@if (_projectReadModel == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 order-md-2 mb-4">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted"></span>
+                    <span class="badge badge-secondary badge-pill"></span>
+                </h4>
+                <ul class="list-group mb-3">
+                    @if (_selectedDocument != null)
+                    {
+                        <h6>Revision history document id</h6>
+                        <h6>(@_selectedDocument.DocumentId)</h6>
+                        @foreach (var revision in _selectedDocument.RevisionHistory)
+                        {
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div>
+                                    <h6 class="my-0">@revision.Comment</h6>
+                                    <small class="text-muted">Version: @revision.Version</small>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="col-md-8 order-md-1">
+                <h4 class="mb-3">
+                    <span class="text-muted">Project information</span>
+                </h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">Project number</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="" value="@_projectReadModel.ProjectNumber" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName">Display name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="" value="@_projectReadModel.DisplayName" disabled required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Assigned project manager (available for assignment: 23, 24, 25, 26, 27)</label>
+                        <div class="input-group">
+                            @if(_projectReadModel.ProjectManager.EmployeeNumber == -1)
+                            {
+                                <label class="form-control">None assigned</label>
+                            }
+                            else
+                            {
+                                <label class="form-control">@_projectReadModel.ProjectManager.FirstName @_projectReadModel.ProjectManager.LastName</label>
+                            }
+                        
+                            <input type="text" class="form-control" placeholder="Employee number..." @onchange="OnProjectManagerEmployeeNumberChanged">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-secondary" @onclick="ChangeProjectManagerAsync">Change</button>
+                            </div>
+                        </div>
+                </div>
+
+                <hr class="mb-4">
+
+                <div class="mb-3">
+                    <label>Assigned electricians (available for assignment: 123, 124, 125, 126, 127)</label>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Employee number</th>
+                                <th>First name</th>
+                                <th>Last name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var electrician in _projectReadModel.Electricians)
+                            {
+                                <tr>
+                                    <td>@electrician.EmployeeNumber</td>
+                                    <td>@electrician.FirstName</td>
+                                    <td>@electrician.LastName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <input type="text" class="form-control" placeholder="Employee number..." @onchange="OnElectricianEmployeeNumberChanged">
+                    <button @onclick="AssignElectricianAsync">Assign electrician</button>
+                </div>
+
+                <hr class="mb-4">
+
+                <div class="mb-3">
+                    <label>Documents</label>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Document id</th>
+                                <th>Name</th>
+                                <th>Version</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var document in _projectReadModel.Documents)
+                            {
+                                <tr>
+                                    <td>@document.DocumentId</td>
+                                    <td>@document.Name</td>
+                                    <td>@document.Version</td>
+                                    <td><button @onclick="() => UpdateDocument(document)">Dummy update</button></td>
+                                    <td><button @onclick="() => DocumentSelected(document)">Revisions</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <input type="text" class="form-control" placeholder="Document name..." @onchange="OnDocumentNameChanged">
+                    <button @onclick="UploadDocumentAsync">Upload new document</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

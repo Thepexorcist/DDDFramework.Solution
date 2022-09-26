@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DomainEventHandlers\" />
+    <Folder Include="DomainEventNofitications\" />
+    <Folder Include="DomainEventNotificationHandlers\" />
+    <Folder Include="IntegrationEvents\Outgoing\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Core\Domain.Infrastructure\Domain.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\Core\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\SecondContext.Domain\SecondContext.Domain.csproj" />
+    <ProjectReference Include="..\SecondContext.Infrastructure\SecondContext.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

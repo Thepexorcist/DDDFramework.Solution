@@ -1,0 +1,55 @@
+﻿@page "/tenant-management/details/{tenantId:int}"
+
+<h1>Tenant details</h1>
+
+<p>This component handles the details about a tenant and listing/creation of workspaces</p>
+
+@if (_tenant == null)
+{
+     <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col">
+            <h4>Tenant: @_tenant.Name - Activated: @_tenant.IsActive</h4>
+            <p><span>By activating/deactivating a tenant domain events are dispatched and updates all workspaces for the tenant</span></p>
+            <button type="button" id="button1" @onclick="OnActivate">Activate</button>
+            <button type="button" id="button2" @onclick="OnDeactivate">Deactivate</button>
+        </div>
+    </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var workspace in _tenant.Workspaces)
+            {
+                var link = "workspace-management/details/" + @_tenant.TenantId + "/" + @workspace.WorkspaceId;
+                <tr>
+                    <td>@workspace.Name</td>
+                    <td>@workspace.IsActive</td>
+                    <td><NavLink href=@link>Details and projects</NavLink></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    @if (!@_tenant.IsActive)
+    {
+        <label>Tenant needs to be active before any workspaces can be created</label>
+        <br />
+    }
+    else
+    {
+        <input placeholder="Name of new workspace..." @onchange="@OnRegisterNewWorkspaceNameChange" />
+        <button @onclick="RegisterWorkspaceAsync">
+            Register new workspace
+        </button>
+    }
+}
