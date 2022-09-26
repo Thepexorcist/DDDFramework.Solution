@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#own ignores
+/Samples/Multi tenant, multi bounded context/SampleApplication.Web/appsettings.development.json
