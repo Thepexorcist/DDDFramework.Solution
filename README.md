@@ -24,3 +24,12 @@ Both contexts can be setup as running in seperate processes but then another imp
 - Domain event handling (within same bounded context)
 - Domain notification handling (external communication outside bounded context using eventual consistency)
 - Integration event handling
+
+## How to run sample
+Before running the sample you need to publish the databases.
+These can be found under /FirstContext/Database and /SecondContext/Database.
+Right click these and select publish and point out the database server where you want to publish these.
+
+After this is done the appsettings.json/appsettings.Development.json needs to be updated with connection string to the databases.
+
+Run SampleApplication.Web
