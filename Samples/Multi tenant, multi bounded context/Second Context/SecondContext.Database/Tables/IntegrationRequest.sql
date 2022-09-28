@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[IntegrationRequest]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	[Name] NVARCHAR(255) NOT NULL,
+	[ProcessedTime] DATETIME NOT NULL
+)

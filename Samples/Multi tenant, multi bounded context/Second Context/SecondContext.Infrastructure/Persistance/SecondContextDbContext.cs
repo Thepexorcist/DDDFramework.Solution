@@ -1,4 +1,6 @@
 ﻿using Domain.Entities.Interfaces;
+using Domain.Infrastructure.Messaging.Idempotency;
+using Domain.Infrastructure.Messaging.Idempotency.Interfaces;
 using Domain.Infrastructure.Messaging.Interfaces;
 using Domain.Transactions.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +9,7 @@ using SecondContext.Domain.Aggregates.ProjectAggregate.Entities;
 
 namespace SecondContext.Infrastructure.Persistance
 {
-    public class SecondContextDbContext : DbContext, IUnitOfWork
+    public class SecondContextDbContext : DbContext, IUnitOfWork, IIdempotentDbContext
     {
         #region Fields
 
@@ -19,6 +21,7 @@ namespace SecondContext.Infrastructure.Persistance
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<IntegrationRequest> IntegrationRequests { get; set; }
 
         #endregion
 
@@ -29,6 +32,7 @@ namespace SecondContext.Infrastructure.Persistance
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration<IntegrationRequest>(new IntegrationRequestEntityTypeConfiguration("dbo"));
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SecondContextDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
