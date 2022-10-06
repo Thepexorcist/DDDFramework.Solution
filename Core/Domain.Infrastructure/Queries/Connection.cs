@@ -1,11 +1,6 @@
 ﻿using Dapper;
 using Domain.Infrastructure.Queries.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Infrastructure.Queries
 {

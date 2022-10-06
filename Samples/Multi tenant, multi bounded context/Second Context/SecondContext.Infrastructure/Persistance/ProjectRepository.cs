@@ -1,4 +1,6 @@
 ﻿using Domain.Infrastructure.Repositories.EFCore;
+using Domain.Infrastructure.Tenancy.Interfaces;
+using Domain.Tenancy.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SecondContext.Domain.Aggregates.ProjectAggregate;
 using SecondContext.Domain.Aggregates.ProjectAggregate.Repositories.Interfaces;
@@ -16,7 +18,7 @@ namespace SecondContext.Infrastructure.Persistance
         IProjectRepository
     { 
 
-        public ProjectRepository(SecondContextDbContext context) : base(context)
+        public ProjectRepository(SecondContextDbContext context, ITenantRepositoryFilter<TenantId> tenantRepositoryFilter) : base(context, tenantRepositoryFilter)
         {
         }
 

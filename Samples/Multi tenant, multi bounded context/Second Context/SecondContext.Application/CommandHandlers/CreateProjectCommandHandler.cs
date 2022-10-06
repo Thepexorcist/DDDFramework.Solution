@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Domain.Infrastructure.Tenancy;
+using Domain.Tenancy;
+using MediatR;
 using SecondContext.Application.Commands;
 using SecondContext.Domain.Aggregates.ProjectAggregate;
 using SecondContext.Domain.Aggregates.ProjectAggregate.Repositories.Interfaces;

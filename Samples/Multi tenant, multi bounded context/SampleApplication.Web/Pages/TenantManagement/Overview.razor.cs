@@ -1,4 +1,5 @@
-﻿using FirstContext.Application.Commands;
+﻿using Blazored.LocalStorage;
+using FirstContext.Application.Commands;
 using FirstContext.Application.Queries.Interfaces;
 using FirstContext.Application.Queries.ReadModels;
 using MediatR;
@@ -13,6 +14,9 @@ namespace SampleApplication.Web.Pages.TenantManagement
 
         [Inject]
         protected IFirstContextQueries FirstContextQueries { get; set; }
+
+        [Inject]
+        protected IHttpContextAccessor HttpContextAccessor { get; set; }
 
         [Inject]
         protected IMediator Mediator { get; set; }
@@ -34,6 +38,16 @@ namespace SampleApplication.Web.Pages.TenantManagement
 
             await Mediator.Send(command);
             await LoadData();
+        }
+
+        private async Task SetActiveTenantAsync(TenantForListReadModel tenant)
+        {
+            if (HttpContextAccessor.HttpContext.Request.Headers.ContainsKey("Tenant"))
+            {
+                HttpContextAccessor.HttpContext.Request.Headers.Remove("Tenant");
+            }
+
+            HttpContextAccessor.HttpContext.Request.Headers.Add("Tenant", tenant.TenantId.ToString());
         }
 
         private void OnRegisterNewTenantNameChange(ChangeEventArgs args)

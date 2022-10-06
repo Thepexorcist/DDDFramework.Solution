@@ -4,6 +4,8 @@ using FirstContext.Domain.Aggregates.WorkspaceAggregate;
 using FirstContext.Domain.Aggregates.WorkspaceAggregate.Entities;
 using Domain.Infrastructure.Repositories.EFCore;
 using FirstContext.Domain.Aggregates.WorkspaceAggregate.Repositories.Interfaces;
+using Domain.Tenancy.Repositories.Interfaces;
+using Domain.Infrastructure.Tenancy.Interfaces;
 
 namespace FirstContext.Infrastructure.Persistance
 {
@@ -11,7 +13,7 @@ namespace FirstContext.Infrastructure.Persistance
         MultiTenantRepositoryBase<FirstContextDbContext, Workspace, TenantId, WorkspaceId>, 
         IWorkspaceRepository
     {
-        public WorkspaceRepository(FirstContextDbContext context) : base(context)
+        public WorkspaceRepository(FirstContextDbContext context, ITenantRepositoryFilter<TenantId> tenantRepositoryFilter) : base(context, tenantRepositoryFilter)
         {
         }
 

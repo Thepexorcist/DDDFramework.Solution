@@ -1,12 +1,8 @@
 ﻿using Domain.Infrastructure.Queries.Interfaces;
+using Domain.Infrastructure.Tenancy.Interfaces;
 using SecondContext.Application.Queries.Interfaces;
 using SecondContext.Application.Queries.ReadModels;
 using SecondContext.Infrastructure.Persistance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SecondContext.Application.Queries
 {
@@ -15,12 +11,14 @@ namespace SecondContext.Application.Queries
         #region Fields
 
         private readonly IConnection<SecondContextDbContext> _connection;
+        private readonly ITenantQueryFilter<int> _tenantQueryFilter;
 
         #endregion
 
-        public SecondContextQueries(IConnection<SecondContextDbContext> connection)
+        public SecondContextQueries(IConnection<SecondContextDbContext> connection, ITenantQueryFilter<int> tenantQueryFilter)
         {
             _connection = connection;
+            _tenantQueryFilter = tenantQueryFilter;
         }
 
         public async Task<ProjectOverviewReadModel> GetProjectOverviewAsync(int tenantId)
@@ -62,7 +60,8 @@ namespace SecondContext.Application.Queries
             {
                 return new ProjectReadModel();
             }
-            var project = result.First();
+
+            var filteredResult = _tenantQueryFilter.FilterResult(result.First());
 
             var projectManager = await _connection.Query<ProjectManagerReadModel>(
                 @"SELECT
@@ -76,7 +75,7 @@ namespace SecondContext.Application.Queries
 
             if (projectManager.Count() > 0)
             {
-                project.ProjectManager = projectManager.First();
+                filteredResult.ProjectManager = projectManager.First();
             }
 
             var electricians = await _connection.Query<ElectricianReadModel>(
@@ -91,7 +90,7 @@ namespace SecondContext.Application.Queries
 
             if (electricians.Count() > 0)
             {
-                project.Electricians = electricians.ToList();
+                filteredResult.Electricians = electricians.ToList();
             }
 
             var documents = await _connection.Query<DocumentReadModel>(
@@ -104,10 +103,10 @@ namespace SecondContext.Application.Queries
                 WHERE 
                     pd.ProjectId = @projectId", new { projectId });
 
-            
-            project.Documents = documents.ToList();
 
-            foreach (var document in project.Documents)
+            filteredResult.Documents = documents.ToList();
+
+            foreach (var document in filteredResult.Documents)
             {
                 var revisions = await _connection.Query<RevisionReadModel>(
                     @"SELECT
@@ -121,7 +120,7 @@ namespace SecondContext.Application.Queries
                 document.RevisionHistory = revisions.ToList();
             }
             
-            return project;
+            return filteredResult;
         }
     }
 }

@@ -41,8 +41,9 @@ namespace Domain.Infrastructure.Messaging.Idempotency
             integrationRequest.Name = typeof(TCommand).Name;
             integrationRequest.ProcessedTime = DateTime.Now;
 
+            // Add integration request.
+            // SaveChanges will be called after the command has been processed fully using a local transaction.
             await _context.IntegrationRequests.AddAsync(integrationRequest);
-            await _context.SaveChangesAsync();
         }
 
         protected async Task<bool> ExistAsync(Guid id)

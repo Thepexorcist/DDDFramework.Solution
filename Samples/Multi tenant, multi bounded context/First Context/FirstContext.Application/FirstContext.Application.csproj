@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\Core\Domain.Infrastructure\Domain.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\Core\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\FirstContext.Domain\FirstContext.Domain.csproj" />

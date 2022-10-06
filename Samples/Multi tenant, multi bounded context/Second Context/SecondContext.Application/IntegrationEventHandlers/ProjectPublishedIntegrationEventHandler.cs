@@ -1,9 +1,12 @@
 ﻿using Domain.Infrastructure.Messaging.Idempotency;
+using Domain.Infrastructure.Tenancy;
+using Domain.Tenancy;
 using EventBus.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SecondContext.Application.Commands;
 using SecondContext.Application.IntegrationEvents.Incoming;
+using SecondContext.Domain.Tenant;
 using SecondContext.Infrastructure.Persistance;
 using System;
 using System.Collections.Generic;
@@ -51,11 +54,17 @@ namespace SecondContext.Application.IntegrationEventHandlers
             // Add id to processed table.
             await base.CreateIntegrationRequestForCommand(command, integrationEvent.Id);
 
-            var result = await _mediator.Send(command);
+            // Ensure correct tenant.
+            var resolvedTenant = new ResolvedTenant<TenantId>(new TenantId(integrationEvent.TenantId));
 
-            if (result == false)
+            using (TenantContextOverride<TenantId>.Push(resolvedTenant))
             {
-                throw new Exception("Could not process project published integration event");
+                var result = await _mediator.Send(command);
+
+                if (result == false)
+                {
+                    throw new Exception("Could not process project published integration event");
+                }
             }
         }
     }

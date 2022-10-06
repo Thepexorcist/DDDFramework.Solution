@@ -1,10 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using EventBus.Interfaces;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using SampleApplication.Web.Configurations;
-using SampleApplication.Web.Data;
 using SecondContext.Application.IntegrationEventHandlers;
 using SecondContext.Application.IntegrationEvents.Incoming;
 
@@ -18,6 +15,7 @@ builder.Services.AddAndConfigureFirstContextDatabase(builder.Configuration);
 builder.Services.AddAndConfigureSecondContextDatabase(builder.Configuration);
 builder.Services.AddAndConfigureEventBus(builder.Configuration);
 builder.Services.AddAndConfigureFirstContextEventualConsistency(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 
 var configuration = builder.Configuration;
 
@@ -27,7 +25,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterMod
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new SampleApplication.Web.AutofacModules.FirstContextModules.MediatorModule(configuration)));
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new SampleApplication.Web.AutofacModules.SecondContextModules.ApplicationModule(configuration)));
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new SampleApplication.Web.AutofacModules.SecondContextModules.MediatorModule(configuration)));
-
 
 var app = builder.Build();
 

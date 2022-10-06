@@ -1,12 +1,9 @@
 ﻿using Domain.Infrastructure.Queries.Interfaces;
+using Domain.Infrastructure.Tenancy.Interfaces;
 using FirstContext.Application.Queries.Interfaces;
 using FirstContext.Application.Queries.ReadModels;
 using FirstContext.Infrastructure.Persistance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace FirstContext.Application.Queries
 {
@@ -15,14 +12,16 @@ namespace FirstContext.Application.Queries
         #region Fields
 
         private readonly IConnection<FirstContextDbContext> _connection;
+        private readonly ITenantQueryFilter<int> _tenantQueryFilter;
 
         #endregion
 
         #region Constructors
 
-        public FirstContextQueries(IConnection<FirstContextDbContext> connection)
+        public FirstContextQueries(IConnection<FirstContextDbContext> connection, ITenantQueryFilter<int> tenantQueryFilter)
         {
             _connection = connection;
+            _tenantQueryFilter = tenantQueryFilter;
         }
 
         #endregion
@@ -40,7 +39,7 @@ namespace FirstContext.Application.Queries
             return result.ToList();
         }
 
-            public async Task<TenantReadModel> GetTenantAsync(int tenantId)
+        public async Task<TenantReadModel> GetTenantAsync(int tenantId)
         {
             var result = await _connection.Query<TenantReadModel>(
                 @"SELECT
@@ -69,6 +68,7 @@ namespace FirstContext.Application.Queries
 
             var readModel = result.First();
             readModel.Workspaces = workspaces.ToList();
+
             return readModel;
         }
 
@@ -91,6 +91,8 @@ namespace FirstContext.Application.Queries
                 return new WorkspaceReadModel();
             }
 
+            var filteredResult = _tenantQueryFilter.FilterResult(result.First());
+
             var projects = await _connection.Query<ProjectReadModel>(
                 @"SELECT
                     wp.Id AS 'ProjectId',
@@ -112,9 +114,10 @@ namespace FirstContext.Application.Queries
                 WHERE 
                     wle.WorkspaceId = @workspaceId", new { workspaceId });
 
-            var readModel = result.First();
+            var readModel = filteredResult;
             readModel.Projects = projects.ToList();
             readModel.LogEntries = logEntries.ToList();
+
             return readModel;
         }
     }

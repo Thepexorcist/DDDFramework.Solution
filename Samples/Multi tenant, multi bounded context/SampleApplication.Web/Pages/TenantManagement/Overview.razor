@@ -17,6 +17,7 @@ else
                 <th>Name</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,7 @@ else
                 var linkProjects = "project-management/overview/" + @tenant.TenantId;
                 <tr>
                     <td>@tenant.Name</td>
+                    <td><button @onclick="() => SetActiveTenantAsync(tenant)">Set as active tenant</button></td>
                     <td><NavLink href=@link>Details and workspaces</NavLink></td>
                     <td><NavLink href=@linkProjects>Go directly to project management</NavLink></td>
                 </tr>
